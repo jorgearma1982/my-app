@@ -7,7 +7,7 @@ node{
    }
    stage('Deploy to Tomcat'){
       
-      sshagent(['ol6-sysadmin']) {
+      sshagent( credentials: ['ol6-sysadmin']) {
          sh 'scp -o StrictHostKeyChecking=no target/*.war sysadmin@10.66.199.127:/opt/tomcat7/webapps/'
       }
    }
