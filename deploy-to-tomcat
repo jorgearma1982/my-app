@@ -1,4 +1,4 @@
-node{
+node ('master') {
    def tomcatIp = '10.66.199.127'
    def tomcatUser = 'sysadmin'
    def stopTomcat = "ssh ${tomcatUser}@${tomcatIp} sudo /etc/init.d/tomcat6 stop"
