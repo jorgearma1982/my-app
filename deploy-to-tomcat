@@ -1,14 +1,18 @@
 node ('master') {
+
    def tomcatIp = '10.66.199.127'
    def tomcatUser = 'sysadmin'
    def stopTomcat = "ssh ${tomcatUser}@${tomcatIp} sudo /etc/init.d/tomcat6 stop"
    def startTomcat = "ssh ${tomcatUser}@${tomcatIp} sudo /etc/init.d/tomcat6 start"
+   def cleanApp = "ssh ${tomcatUser}@${tomcatIp} sudo rm -rf /var/lib/tomcat6/webapp/myweb*"
    def copyWar = "scp -o StrictHostKeyChecking=no target/*.war ${tomcatUser}@${tomcatIp}:/var/lib/tomcat6/webapps/"
+
    stage('SCM Checkout'){
         git branch: 'master', 
 	        credentialsId: 'tomcat-dev',
 	        url: 'https://github.com/jorgearma1982/my-app'
    }
+
    stage('Maven Build'){
 		sh "mvn clean package"
    }
@@ -16,6 +20,7 @@ node ('master') {
    stage('Deploy Dev'){
        sshagent(['tomcat-dev']) {
 			sh "${stopTomcat}"
+			sh "${cleanApp}"
 			sh "${copyWar}"
 			sh "${startTomcat}"
 	   }
